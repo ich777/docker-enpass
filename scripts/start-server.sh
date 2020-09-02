@@ -1,5 +1,6 @@
 #!/bin/bash
 export DISPLAY=:99
+export XDG_RUNTIME_DIR="/tmp/runtime-enpass"
 
 #CUR_V="$()"
 LAT_V="$(wget -qO- https://github.com/ich777/versions/raw/master/Enpass | grep LATEST | cut -d '=' -f2)"
