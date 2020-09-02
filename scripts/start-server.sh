@@ -90,4 +90,4 @@ sleep 2
 
 echo "---Starting Enpass---"
 cd ${DATA_DIR}
-${DATA_DIR}/Enpass
+${DATA_DIR}/Enpass 2>/dev/null
