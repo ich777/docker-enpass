@@ -2,46 +2,48 @@
 export DISPLAY=:99
 export XDG_RUNTIME_DIR="/tmp/runtime-enpass"
 
-#CUR_V="$()"
+CUR_V="$(find ${DATA_DIR} -name instv* | cut -d 'v' -f2)"
 LAT_V="$(wget -qO- https://github.com/ich777/versions/raw/master/Enpass | grep LATEST | cut -d '=' -f2)"
 
-#if [ -z "$LAT_V" ]; then
-#	if [ ! -z "$CUR_V" ]; then
-#		echo "---Can't get latest version of Enpass falling back to v$CUR_V---"
-#		LAT_V="$CUR_V"
-#	else
-#		echo "---Something went wrong, can't get latest version of Enpass, putting container into sleep mode---"
-#		sleep infinity
-#	fi
-#fi
+if [ -z "$LAT_V" ]; then
+	if [ ! -z "$CUR_V" ]; then
+		echo "---Can't get latest version of Enpass falling back to v$CUR_V---"
+		LAT_V="$CUR_V"
+	else
+		echo "---Something went wrong, can't get latest version of Enpass, putting container into sleep mode---"
+		sleep infinity
+	fi
+fi
 
-#echo "---Version Check---"
-#if [ -z "$CUR_V" ]; then
-#	echo "---Enpass not installed, installing---"
-#    cd ${DATA_DIR}
-#	if wget -q -nc --show-progress --progress=bar:force:noscroll -O ${DATA_DIR}/Electrum-$LAT_V.tar.gz https://download.electrum.org/$LAT_V/Electrum-$LAT_V.tar.gz ; then
-#    	echo "---Sucessfully downloaded Enpass---"
-#    else
-#    	echo "---Something went wrong, can't download Enpass, putting container in sleep mode---"
-#        sleep infinity
-#    fi
-#	tar -C ${DATA_DIR} --strip-components=1 -xf ${DATA_DIR}/Electrum-$LAT_V.tar.gz
-#	rm -R ${DATA_DIR}/Electrum-$LAT_V.tar.gz
-#elif [ "$CUR_V" != "$LAT_V" ]; then
-#	echo "---Version missmatch, installed v$CUR_V, downloading and installing latest v$LAT_V...---"
-#    cd ${DATA_DIR}
-#    rm -R ${DATA_DIR}/*
-#	if wget -q -nc --show-progress --progress=bar:force:noscroll -O ${DATA_DIR}/Electrum-$LAT_V.tar.gz https://download.electrum.org/$LAT_V/Electrum-$LAT_V.tar.gz ; then
-#    	echo "---Sucessfully downloaded Enpass---"
-#    else
-#    	echo "---Something went wrong, can't download Enpass, putting container in sleep mode---"
-#        sleep infinity
-#    fi
-#	tar -C ${DATA_DIR} --strip-components=1 -xf ${DATA_DIR}/Electrum-$LAT_V.tar.gz
-#	rm -R ${DATA_DIR}/Electrum-$LAT_V.tar.gz
-#elif [ "$CUR_V" == "$LAT_V" ]; then
-#	echo "---Enpass v$CUR_V up-to-date---"
-#fi
+echo "---Version Check---"
+if [ -z "$CUR_V" ]; then
+	echo "---Enpass not installed, installing---"
+    cd ${DATA_DIR}
+	if wget -q -nc --show-progress --progress=bar:force:noscroll -O ${DATA_DIR}/Enpass-v$LAT_V.tar.gz https://github.com/ich777/enpass-unraid/releases/download/$LAT_V/Enpass-v$LAT_V.tar.gz ; then
+    	echo "---Sucessfully downloaded Enpass---"
+    else
+    	echo "---Something went wrong, can't download Enpass, putting container in sleep mode---"
+        sleep infinity
+    fi
+	tar -C ${DATA_DIR} -xf ${DATA_DIR}/Enpass-v$LAT_V.tar.gz
+	rm -R ${DATA_DIR}/Enpass-v$LAT_V.tar.gz
+	touch ${DATA_DIR}/instv$LAT_V
+elif [ "$CUR_V" != "$LAT_V" ]; then
+	echo "---Version missmatch, installed v$CUR_V, downloading and installing latest v$LAT_V...---"
+    cd ${DATA_DIR}
+    find . -maxdepth 1 -type f -print0 | xargs -0 -I {} rm -R {} 2&>/dev/null
+	if wget -q -nc --show-progress --progress=bar:force:noscroll -O ${DATA_DIR}/Enpass-v$LAT_V.tar.gz https://github.com/ich777/enpass-unraid/releases/download/$LAT_V/Enpass-v$LAT_V.tar.gz ; then
+    	echo "---Sucessfully downloaded Enpass---"
+    else
+    	echo "---Something went wrong, can't download Enpass, putting container in sleep mode---"
+        sleep infinity
+    fi
+	tar -C ${DATA_DIR} -xf ${DATA_DIR}/Enpass-v$LAT_V.tar.gz
+	rm -R ${DATA_DIR}/Enpass-v$LAT_V.tar.gz
+	touch ${DATA_DIR}/instv$LAT_V
+elif [ "$CUR_V" == "$LAT_V" ]; then
+	echo "---Enpass v$CUR_V up-to-date---"
+fi
 
 echo "---Preparing Server---"
 echo "---Resolution check---"
@@ -82,8 +84,6 @@ echo "---Starting noVNC server---"
 websockify -D --web=/usr/share/novnc/ --cert=/etc/ssl/novnc.pem 8080 localhost:5900
 sleep 2
 
-sleep infinity
-
 echo "---Starting Electrum---"
 cd ${DATA_DIR}
-/usr/bin/python3 ${DATA_DIR}/run_electrum
+${DATA_DIR}/Enpass
