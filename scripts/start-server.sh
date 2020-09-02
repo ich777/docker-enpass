@@ -46,6 +46,10 @@ elif [ "$CUR_V" == "$LAT_V" ]; then
 fi
 
 echo "---Preparing Server---"
+if [ ! -d /tmp/runtime-enpass ]; then
+	mkdir -p /tmp/runtime-enpass
+	chmod -R 0700 /tmp/runtime-enpass
+fi
 echo "---Resolution check---"
 if [ -z "${CUSTOM_RES_W} ]; then
 	CUSTOM_RES_W=1024
@@ -84,6 +88,6 @@ echo "---Starting noVNC server---"
 websockify -D --web=/usr/share/novnc/ --cert=/etc/ssl/novnc.pem 8080 localhost:5900
 sleep 2
 
-echo "---Starting Electrum---"
+echo "---Starting Enpass---"
 cd ${DATA_DIR}
 ${DATA_DIR}/Enpass
