@@ -73,7 +73,7 @@ find $DATA_DIR -name "x11vncLog.*" -exec rm -f {} \;
 echo "---Checking for old display lock files---"
 rm -rf /tmp/.X99*
 rm -rf /tmp/.X11*
-rm -rf ${DATA_DIR}/.vnc/*
+rm -rf ${DATA_DIR}/.vnc/*.log
 screen -wipe 2&>/dev/null
 
 chmod -R ${DATA_PERM} ${DATA_DIR}
