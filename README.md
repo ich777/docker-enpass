@@ -10,7 +10,7 @@ Unlike most other popular password managers, Enpass is an offline password manag
 | --- | --- | --- |
 | CUSTOM_RES_W | Minimum of 1024 pixesl (leave blank for 1024 pixels) | 1280 |
 | CUSTOM_RES_H | Minimum of 768 pixesl (leave blank for 768 pixels) | 1024 |
-| UMASK | Set permissions for newly created files | 000 |
+| UMASK | Set permissions for newly created files | 0000 |
 | UID | User Identifier | 99 |
 | GID | Group Identifier | 100 |
 
