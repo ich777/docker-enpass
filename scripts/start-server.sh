@@ -70,6 +70,7 @@ fi
 echo "---Checking for old logfiles---"
 find $DATA_DIR -name "XvfbLog.*" -exec rm -f {} \;
 find $DATA_DIR -name "x11vncLog.*" -exec rm -f {} \;
+chmod -R ${DATA_PERM} ${DATA_DIR}
 echo "---Checking for old display lock files---"
 rm -rf /tmp/.X99*
 rm -rf /tmp/.X11*
@@ -78,8 +79,6 @@ if [ -f ${DATA_DIR}/.vnc/passwd ]; then
 	chmod 600 ${DATA_DIR}/.vnc/passwd
 fi
 screen -wipe 2&>/dev/null
-
-chmod -R ${DATA_PERM} ${DATA_DIR}
 
 echo "---Starting TurboVNC server---"
 vncserver -geometry ${CUSTOM_RES_W}x${CUSTOM_RES_H} -depth ${CUSTOM_DEPTH} :99 -rfbport ${RFB_PORT} -noxstartup ${TURBOVNC_PARAMS} 2>/dev/null
